@@ -7,14 +7,16 @@ import { View, Text, SafeAreaView } from 'react-native';
 import { useEffect } from 'react';
 import Registro from './src/telas/veiculo/registro'
 import Rotas from './src/rotas';
+import { criarTabelaRegistroDeVeiculo } from './src/serivces/tblVeiculo';
+import { criarTabelaAbastecimento } from './src/serivces/abastecimento';
 
 export default function App() {
 
-  useEffect(() => {
 
-    return () => {
-      <Registro />
-    }
+  useEffect(() => {
+    criarTabelaRegistroDeVeiculo();
+    criarTabelaAbastecimento();
+
   }, [])
 
   const [fonstLoaded] = useFonts({
