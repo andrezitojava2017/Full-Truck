@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
-import { Image, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { Image, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { estilo } from './estilo/estilo'
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { adicionaVeiculo, buscarDadosVeiculo } from '../../serivces/tblVeiculo';
 
 const Veiculo = () => {
-    const [modelo, setModelo] = useState("");
-    const [placa, setPlaca] = useState("");
-    const [kilometragem, setkm] = useState("");
+    const [modelo, setModelo] = useState<string>("");
+    const [placa, setPlaca] = useState<string>("");
+    const [kilometragem, setkm] = useState<string>("");
+
+    const addVeiculo = async () => {
+        const dataVeiculo = { modelo: modelo, placa: placa, km: kilometragem }
+        const rs = await adicionaVeiculo(dataVeiculo);
+        console.log(rs)
+    }
+
+    const buscarVeiculo = async () => {
+        const dados = await buscarDadosVeiculo();
+        console.log(dados[0].modelo)
+    }
 
     return (
 
@@ -31,6 +43,7 @@ const Veiculo = () => {
                         placeholder='Modelo do veiculo'
                         keyboardType='default'
                         placeholderTextColor='#036564'
+                        onChangeText={(text) => setModelo(text)}
                     />
                 </View>
 
@@ -54,11 +67,16 @@ const Veiculo = () => {
                         placeholder='KM Inicial'
                         keyboardType='numeric'
                         placeholderTextColor='#036564'
+                        onChangeText={(text) => setkm(text)}
                     />
                 </View>
 
-                <TouchableOpacity style={estilo.touchable}>
+                <TouchableOpacity style={estilo.touchable} onPress={addVeiculo}>
                     <Text style={estilo.text_touchable}>Pronto</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilo.touchable} onPress={buscarVeiculo}>
+                    <Text style={estilo.text_touchable}>Buscar</Text>
                 </TouchableOpacity>
 
             </View>
