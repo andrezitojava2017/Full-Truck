@@ -7,6 +7,7 @@ type Abastecimento = {
     preco: string;
     combustivel: string;
     kilometragem: string;
+    data: Date;
 }
 export const criarTabelaAbastecimento = () => {
 
@@ -16,7 +17,7 @@ export const criarTabelaAbastecimento = () => {
             "litros TEXT," +
             "preco TEXT," +
             "combustivel TEXT," +
-            "kilometragem TEXT);", [], () => {
+            "kilometragem TEXT, data DATATIME NOT NULL DEFAULT CURRENT_TIMESTAMP);", [], () => {
                 console.log('tabela abastecimento criada com sucesso!')
             }, () => {
                 console.error('ocorreu um erro')
@@ -53,7 +54,7 @@ export const listaAbastecimento = async () => {
         db.transaction((transaction) => {
             const sql = 'SELECT * FROM abastecimento'
             transaction.executeSql(sql, [], (_, results) => {
-                console.log(results.rows._array)
+                // console.log(results.rows._array)
                 resolve(results.rows._array)
             }, (_, error) => {
                 console.log(error)
