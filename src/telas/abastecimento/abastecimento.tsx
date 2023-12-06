@@ -1,20 +1,23 @@
 import { MaterialCommunityIcons, FontAwesome, FontAwesome5, Entypo } from "@expo/vector-icons";
 import { useState } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, ToastAndroid } from "react-native"
-import { novoAbastecimento } from "../../serivces/abastecimento";
+import { dropTable, listaAbastecimento, novoAbastecimento } from "../../serivces/abastecimento";
 import estilo from './estilo/estilo'
 
 const Abastecimento = () => {
-
-    const [dataAbastecimento, setDataAbastecimento] = useState<Abastecimento>({ qtdLitros: "", preco: "", combustivel: "", kilometragem: "" });
     type Abastecimento = {
         qtdLitros: string;
         preco: string;
         combustivel: string;
         kilometragem: string;
+        data?: Date;
     }
 
+    const [dataAbastecimento, setDataAbastecimento] = useState<Abastecimento>({ qtdLitros: "", preco: "", combustivel: "", kilometragem: "" });
+
+
     const registroNovoAbastecimento = async () => {
+        setDataAbastecimento(dataAbastecimento)
         const rs = await novoAbastecimento(dataAbastecimento)
 
         if (rs != 0) {
@@ -23,6 +26,12 @@ const Abastecimento = () => {
 
     }
 
+    const lista = async () => {
+        await listaAbastecimento()
+    }
+    const drop = () => {
+        dropTable();
+    }
 
     return (
         <KeyboardAvoidingView style={estilo.container}>
