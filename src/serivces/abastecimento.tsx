@@ -7,7 +7,7 @@ type Abastecimento = {
     preco: string;
     combustivel: string;
     kilometragem: string;
-    data: Date;
+    data?: Date;
 }
 export const criarTabelaAbastecimento = () => {
 
