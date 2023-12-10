@@ -10,6 +10,7 @@ type Abastecimento = {
     combustivel: string;
     kilometragem: string;
     data: string;
+    media: string;
 }
 
 
@@ -33,7 +34,7 @@ const Card = ({ values }: { values: Abastecimento }) => {
 
                     </View>
                     <View style={estilo.alinhaItens}>
-                        <Text style={{ fontSize: 34, fontWeight: 'bold' }}>22,8</Text>
+                        <Text style={{ fontSize: 34, fontWeight: 'bold' }}>{values.media}</Text>
                         <Text>Km/l</Text>
                     </View>
                 </View>
