@@ -1,11 +1,11 @@
 import { MaterialCommunityIcons, FontAwesome, FontAwesome5, Entypo } from "@expo/vector-icons";
 import { useState } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, ToastAndroid } from "react-native"
-import { dropTable, listaAbastecimento, novoAbastecimento } from "../../serivces/abastecimento";
+import { dropTable, listaAbastecimento, maiorValorKm, novoAbastecimento } from "../../serivces/abastecimento";
 import estilo from './estilo/estilo'
 
 const Abastecimento = () => {
-    type Abastecimento = {
+    type AbastecimentoType = {
         qtdLitros: string;
         preco: string;
         combustivel: string;
@@ -13,22 +13,49 @@ const Abastecimento = () => {
         data?: Date;
     }
 
-    const [dataAbastecimento, setDataAbastecimento] = useState<Abastecimento>({ qtdLitros: "", preco: "", combustivel: "", kilometragem: "" });
+    const [dataAbastecimento, setDataAbastecimento] = useState<AbastecimentoType>({ qtdLitros: "", preco: "", combustivel: "", kilometragem: "" });
+    const [media, setMedia] = useState<string>("0");
 
+    const calcularMediaKmPorLitro = async () => {
+
+        return new Promise<string>(async (resolve) => {
+
+            const ultimoKm = await maiorValorKm();
+
+            if (ultimoKm === null || ultimoKm === undefined) {
+                // await registroNovoAbastecimento()
+                resolve("0")
+            }
+            const diferenca = parseFloat(dataAbastecimento.kilometragem) - parseFloat(ultimoKm);
+            const calcMedia = (diferenca * 1000) / parseFloat(dataAbastecimento.qtdLitros);
+            const mediaValor = calcMedia.toPrecision(3);
+
+            // console.log(`media calculada: ${parseFloat(dataAbastecimento.kilometragem)}-${parseFloat(ultimoKm)} = ${(diferenca * 1000).toPrecision(3)}`)
+            // console.log(`Media obtida: ${calcMedia.toPrecision(3)}`)
+            console.log(`calculo media: ${calcMedia}`)
+
+            resolve(mediaValor)
+        })
+
+
+    }
 
     const registroNovoAbastecimento = async () => {
-        setDataAbastecimento(dataAbastecimento)
-        const rs = await novoAbastecimento(dataAbastecimento)
 
-        if (rs != 0) {
-            ToastAndroid.showWithGravity("Abastecimento registrado!", 6000, ToastAndroid.BOTTOM);
-        }
+        calcularMediaKmPorLitro().then(async (result: string) => {
+
+            console.log(`media obtida: ${result}`)
+            const rs = await novoAbastecimento(dataAbastecimento, result)
+
+            if (rs != 0) {
+                ToastAndroid.showWithGravity("Abastecimento registrado!", 6000, ToastAndroid.BOTTOM);
+            }
+
+
+        })
 
     }
 
-    const lista = async () => {
-        await listaAbastecimento()
-    }
     const drop = () => {
         dropTable();
     }
