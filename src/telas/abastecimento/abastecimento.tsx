@@ -32,7 +32,7 @@ const Abastecimento = () => {
 
             // console.log(`media calculada: ${parseFloat(dataAbastecimento.kilometragem)}-${parseFloat(ultimoKm)} = ${(diferenca * 1000).toPrecision(3)}`)
             // console.log(`Media obtida: ${calcMedia.toPrecision(3)}`)
-            console.log(`calculo media: ${calcMedia}`)
+            //console.log(`calculo media: ${calcMedia}`)
 
             resolve(mediaValor)
         })
@@ -82,7 +82,7 @@ const Abastecimento = () => {
                                 keyboardType='numeric'
                                 placeholderTextColor='#036564'
                                 style={{ fontSize: 26, color: '#036564', fontWeight: 'bold', }}
-                                onChangeText={(t) => setDataAbastecimento({ ...dataAbastecimento, qtdLitros: t })}
+                                onChangeText={(t) => setDataAbastecimento({ ...dataAbastecimento, qtdLitros: t.replace(',', '.') })}
                             />
                         </View>
                     </View>

@@ -18,7 +18,8 @@ export const criarTabelaAbastecimento = () => {
             "preco TEXT," +
             "combustivel TEXT," +
             "media TEXT," +
-            "kilometragem TEXT, data DATATIME NOT NULL DEFAULT CURRENT_TIMESTAMP);", [], () => {
+            "kilometragem TEXT," +
+            "data DATATIME NOT NULL DEFAULT CURRENT_TIMESTAMP);", [], () => {
                 console.log('tabela abastecimento criada com sucesso!')
             }, () => {
                 console.error('ocorreu um erro')
