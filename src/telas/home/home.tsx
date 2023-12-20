@@ -3,9 +3,8 @@ import estilo from './estilo/estilo'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Card from "../../components/card/card";
 import { useEffect, useState } from "react";
-import { listaAbastecimento, maiorValorKm } from "../../serivces/abastecimento";
-import Abastecimento from "../abastecimento/abastecimento";
-import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { recuperarAbastecimentoPorMesReferencia } from "../../serivces/abastecimento";
+import { DateTimePickerAndroid, DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import Mensagem from "../../components/mensagem/mensagem";
 
 
@@ -25,20 +24,41 @@ const Home = () => {
     const [listAbastecimento, setListAbastecimento] = useState<Abastecimento[]>([{ id: '0', litros: '0', preco: "", combustivel: "", kilometragem: "", data: "", media: "" }])
     const [exibirRefresh, setExibirRefresh] = useState<boolean>(false)
     const [mesReferencia, setMesReferencia] = useState<string>("")
+    const [mesAnoReferencia, setMesAnoReferencia] = useState<string>("")
+
 
     useEffect(() => {
-        (async () => {
-            const lista = await listaAbastecimento();
-            await maiorValorKm();
-
-            if (lista) {
-                setListAbastecimento([...lista]);
+        const carregarDados = async () => {
+            if (mesAnoReferencia !== "") {
+                await carregarListaAbastecimento(mesAnoReferencia);
             }
-        })();
-    }, [])
+        };
 
-    const recuperarMesSelecionado = (event: DateTimePickerEvent, dataSelecionada: Date | any) => {
+        carregarDados();
+    }, [mesAnoReferencia]);
 
+
+    const definirMesReferencia = async (dataSelecionada: Date | any): Promise<void> => {
+
+        let anoAtual = dataSelecionada.getFullYear()
+        let referencia = dataSelecionada.getMonth() + 1;
+
+        const refSelecionada = meses[dataSelecionada.getMonth()];
+        setMesReferencia(refSelecionada);
+        setMesAnoReferencia(`${referencia}/${anoAtual}`)
+
+    }
+
+
+    const carregarListaAbastecimento = async (referencia: string) => {
+        const lista = await recuperarAbastecimentoPorMesReferencia(referencia);
+        if (lista) {
+            setListAbastecimento([...lista]);
+        }
+    }
+
+
+    const recuperarMesSelecionado = async (event: DateTimePickerEvent, dataSelecionada: Date | any) => {
 
         if (dataSelecionada === undefined || event.type === 'dismissed') {
             const mesAtual = new Date().getMonth();
@@ -46,8 +66,10 @@ const Home = () => {
             setMesReferencia(meses[mesAtual])
         }
 
-        const refSelecionada = meses[dataSelecionada.getMonth()];
-        setMesReferencia(refSelecionada);
+        definirMesReferencia(dataSelecionada).then(async () => {
+            await carregarListaAbastecimento(mesAnoReferencia);
+        });
+
     }
 
     const exibirDatePicker = () => {
@@ -63,7 +85,7 @@ const Home = () => {
     const atualizarLista = async () => {
 
         setExibirRefresh(true);
-        const lista = await listaAbastecimento();
+        const lista = await recuperarAbastecimentoPorMesReferencia(mesAnoReferencia);
 
         if (lista) {
             setListAbastecimento([...lista]);
@@ -91,7 +113,7 @@ const Home = () => {
             </View>
 
             {
-                mesReferencia === "" ? <Mensagem />
+                mesAnoReferencia === "" ? <Mensagem />
                     : <FlatList
                         data={listAbastecimento}
                         renderItem={({ item }) => (<Card values={item} />)}
