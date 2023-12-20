@@ -67,6 +67,23 @@ export const listaAbastecimento = async () => {
 
 }
 
+export const recuperarAbastecimentoPorMesReferencia = (mesReferencia: string) => {
+
+    const sql = `SELECT * FROM abastecimento WHERE strftime('%m/%Y', data) = '${mesReferencia}'`
+
+    return new Promise<any[]>((resolve) => {
+        db.transaction((transaction) => {
+            transaction.executeSql(sql, [], (_, results) => {
+                // console.log(results.rows._array)
+                resolve(results.rows._array)
+            }, (_, error) => {
+                //  console.log(error)
+                return false;
+            })
+        })
+    })
+}
+
 export const maiorValorKm = async () => {
     return new Promise<string>((resolve) => {
         db.transaction((transaction) => {
