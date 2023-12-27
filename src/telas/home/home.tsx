@@ -113,14 +113,17 @@ const Home = () => {
             </View>
 
             {
-                mesAnoReferencia === "" ? <Mensagem />
-                    : <FlatList
-                        data={listAbastecimento}
-                        renderItem={({ item }) => (<Card values={item} />)}
-                        keyExtractor={(item) => (item.id)}
-                        refreshing={exibirRefresh}
-                        onRefresh={atualizarLista}
-                    />
+                mesAnoReferencia === "" ? <Mensagem message={"Selecione um mês de referencia"} />
+                    :
+                    listAbastecimento.length !== 0 ?
+                        <FlatList
+                            data={listAbastecimento}
+                            renderItem={({ item }) => (<Card values={item} />)}
+                            keyExtractor={(item) => (item.id)}
+                            refreshing={exibirRefresh}
+                            onRefresh={atualizarLista}
+                        />
+                        : <Mensagem message={"Nenhum registro foi encontrado"} />
             }
 
 
